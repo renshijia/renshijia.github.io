@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>九九八十一难</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 背景音乐开关按钮 -->
+    <button id="musicToggle" class="music-toggle"></button>
+
+    <!-- 启动页面 -->
+    <div id="startScreen" class="overlay">
+        <img src="assets/start_background.png" alt="开始背景" class="overlay-image">
+        <button id="startButton" class="overlay-button">开始游戏</button>
+    </div>
+
+    <!-- 大级提示页面 -->
+    <div id="majorLevelScreen" class="overlay" style="display: none;">
+        <img src="assets/major_level_background.png" alt="大级提示背景" class="overlay-image">
+        <button id="continueButton" class="overlay-button">继续打怪</button>
+    </div>
+
+    <!-- 胜利页面 -->
+    <div id="victoryScreen" class="overlay" style="display: none;">
+        <img src="assets/victory_background.png" alt="胜利背景" class="overlay-image">
+    </div>
+
+    <div id="gameContainer" class="game-container" style="display: none;">
+        <h1>
+            《九九八十一难》
+            <span id="remainingLevels">还剩下 <span id="remainingNumber">81</span> 难</span>
+        </h1>
+        <div class="level-info">
+            <span id="majorLevel">大级：1</span>
+            <span id="minorLevel">小级：1</span>
+        </div>
+        <div class="game-area">
+            <div class="player-side">
+                <img id="playerImage" src="assets/player.png" alt="孙悟空">
+                <div id="statusText" class="status-text"></div>
+            </div>
+            <div class="energy-bar-container">
+                <div id="energyBar" class="energy-bar">
+                    <div class="energy-fill" id="energyFill"></div>
+                </div>
+                <div class="energy-value" id="playerEnergyValue">玩家能量值：0%</div>
+                <button id="lockButton">锁定能量</button>
+                <div class="comparison-result" id="comparisonResult"></div>
+            </div>
+            <div class="monster-side">
+                <img id="monsterImage" src="assets/monster1.png" alt="妖怪">
+                <img id="overlayImage" src="assets/red.png" alt="覆盖图片" class="overlay-image" style="display: none;">
+                <p id="monsterEnergy">妖怪能量值：60%</p>
+            </div>
+        </div>
+    </div>
+    <!-- 背景音乐 -->
+    <audio id="backgroundMusic" src="assets/background_music.mp3" loop></audio>
+    <audio id="victorySound" src="assets/victory.mp3"></audio>
+    <audio id="defeatSound" src="assets/defeat.mp3"></audio>
+    <!-- 新增的音频 -->
+    <audio id="redSound" src="assets/red.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
