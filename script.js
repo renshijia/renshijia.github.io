@@ -1,6 +1,6 @@
 // 游戏变量
 let majorLevel = 1;
-let minorLevel = 1;
+let minorLevel = 1; // 保留 minorLevel，用于逻辑控制
 let energyValue = 0;
 let isIncreasing = true;
 let energyBarInterval;
@@ -9,14 +9,15 @@ let baseSpeed = 12.5; // 初始速度
 let currentSpeed = baseSpeed;
 let totalLevels = 81; // 总共81级
 let newMajorLevelReached = false; // 标记是否晋升大级
-let highestMajorLevel = 1; // 记录玩家达到的最高大级
+
+let playerHealth = 100;
+let monsterHealth = 100;
 
 const monsterEnergyValues = [0, 60, 65, 70, 75, 80, 85, 90, 95, 98]; // 索引对应等级
 
 // DOM 元素
-const majorLevelSpan = document.getElementById('majorLevel');
-const minorLevelSpan = document.getElementById('minorLevel');
-const remainingNumberSpan = document.getElementById('remainingNumber');
+const majorLevelNumber = document.getElementById('majorLevelNumber'); // 新增
+
 const monsterEnergyText = document.getElementById('monsterEnergy');
 const energyFill = document.getElementById('energyFill');
 const lockButton = document.getElementById('lockButton');
@@ -39,11 +40,17 @@ const majorLevelScreen = document.getElementById('majorLevelScreen');
 const continueButton = document.getElementById('continueButton');
 const victoryScreen = document.getElementById('victoryScreen');
 
+const playerHealthFill = document.getElementById('playerHealthFill');
+const monsterHealthFill = document.getElementById('monsterHealthFill');
+
+const challengeFailedDialog = document.getElementById('challengeFailedDialog');
+const retryButton = document.getElementById('retryButton');
+
 // 初始化游戏
 function initGame() {
     updateLevelText();
-    updateRemainingLevels();
     updateDifficulty();
+    resetHealth();
     initBackgroundMusic();
 }
 
@@ -62,17 +69,16 @@ continueButton.addEventListener('click', () => {
     startEnergyBar();
 });
 
+// 挑战失败对话框的再来一次按钮事件
+retryButton.addEventListener('click', () => {
+    challengeFailedDialog.style.display = 'none';
+    resetHealth();
+    startEnergyBar();
+});
+
 // 更新等级显示
 function updateLevelText() {
-    majorLevelSpan.textContent = `大级：${majorLevel}`;
-    minorLevelSpan.textContent = `小级：${minorLevel}`;
-}
-
-// 更新剩余难数
-function updateRemainingLevels() {
-    let passedLevels = (majorLevel - 1) * 9 + (minorLevel - 1);
-    let remaining = totalLevels - passedLevels;
-    remainingNumberSpan.textContent = remaining;
+    majorLevelNumber.textContent = majorLevel;
 }
 
 // 更新难度
@@ -88,8 +94,33 @@ function updateDifficulty() {
     overlayImage.style.display = 'none';
 
     // 更新能量条速度
-    currentSpeed = baseSpeed - (minorLevel - 1) * 1.25;
-    if (currentSpeed < 2.5) currentSpeed = 2.5; // 最小速度限制
+    currentSpeed = baseSpeed; // 固定速度，或者根据需要调整
+}
+
+// 重置生命值
+function resetHealth() {
+    playerHealth = 100;
+    monsterHealth = 100;
+    updateHealthBars();
+}
+
+// 更新血条
+function updateHealthBars() {
+    playerHealthFill.style.width = playerHealth + '%';
+    monsterHealthFill.style.width = monsterHealth + '%';
+
+    playerHealthFill.style.backgroundColor = getHealthColor(playerHealth);
+    monsterHealthFill.style.backgroundColor = getHealthColor(monsterHealth);
+}
+
+function getHealthColor(health) {
+    if (health > 50) {
+        return 'green';
+    } else if (health > 20) {
+        return 'yellow';
+    } else {
+        return 'red';
+    }
 }
 
 // 开始能量条
@@ -98,6 +129,7 @@ function startEnergyBar() {
     energyValue = 0;
     isIncreasing = true;
     energyFill.style.height = '0%';
+    lockButton.disabled = false; // 启用按钮
     energyBarInterval = setInterval(() => {
         if (isIncreasing) {
             energyValue += 1;
@@ -118,6 +150,7 @@ function startEnergyBar() {
 
 // 锁定能量
 lockButton.addEventListener('click', () => {
+    lockButton.disabled = true; // 禁用按钮
     clearInterval(energyBarInterval);
     playerEnergyValue.textContent = `玩家能量值：${energyValue}%`;
     if (energyValue > monsterEnergy) {
@@ -129,7 +162,25 @@ lockButton.addEventListener('click', () => {
         setTimeout(() => {
             playerImage.classList.remove('shake');
         }, 5000); // 震动5秒
-        levelUp();
+
+        // 减少妖怪生命值
+        monsterHealth -= 100 / 9;
+        if (monsterHealth < 0) monsterHealth = 0;
+        updateHealthBars();
+
+        if (monsterHealth <= 0) {
+            // 妖怪被击败，标记为新大级到达
+            newMajorLevelReached = true;
+            // 检查游戏进度
+            setTimeout(() => {
+                checkGameProgress();
+            }, 1000);
+        } else {
+            // 继续当前大级
+            setTimeout(() => {
+                startEnergyBar();
+            }, 3000);
+        }
     } else {
         comparisonResult.textContent = '未超过妖怪的能量值，失败！';
         playSound('defeat');
@@ -139,22 +190,59 @@ lockButton.addEventListener('click', () => {
         setTimeout(() => {
             monsterImage.classList.remove('shake');
         }, 5000); // 震动5秒
-        levelDown();
+
+        // 减少玩家生命值
+        playerHealth -= 100 / 9;
+        if (playerHealth < 0) playerHealth = 0;
+        updateHealthBars();
+
+        if (playerHealth <= 0) {
+            // 玩家被击败，显示挑战失败对话框
+            setTimeout(() => {
+                showChallengeFailedDialog();
+            }, 3000);
+        } else {
+            // 继续当前大级
+            setTimeout(() => {
+                startEnergyBar();
+            }, 3000);
+        }
     }
-    setTimeout(() => {
-        // 隐藏状态文字
-        statusText.style.display = 'none';
-        playerEnergyValue.textContent = '玩家能量值：0%';
-        comparisonResult.textContent = '';
-        checkGameProgress();
-    }, 3000); // 状态文字显示3秒
 });
+
+// 检查游戏进度
+function checkGameProgress() {
+    if (newMajorLevelReached) {
+        newMajorLevelReached = false; // 重置标记
+
+        // 显示 red.png 和播放 red.mp3
+        overlayImage.style.display = 'block';
+
+        redSound.currentTime = 0;
+        redSound.play();
+
+        // 5秒后进入大级提示页面
+        setTimeout(() => {
+            gameContainer.style.display = 'none';
+            majorLevelScreen.style.display = 'block';
+
+            // 更新到下一个大级
+            levelUp();
+        }, 5000); // 等待5秒
+    } else {
+        // 继续当前大级或继续当前战斗
+        startEnergyBar();
+    }
+}
 
 // 显示状态文字
 function showStatusText(text, result) {
     statusText.textContent = text;
     statusText.className = `status-text ${result}`; // 添加 win 或 lose 类
     statusText.style.display = 'block';
+    setTimeout(() => {
+        statusText.style.display = 'none';
+    }, 3000);
 }
 
 // 播放音效
@@ -185,16 +273,12 @@ function initBackgroundMusic() {
 
 // 升级
 function levelUp() {
-    if (minorLevel < 9) {
-        minorLevel++;
-    } else if (majorLevel < 9) {
-        minorLevel = 9; // 确保在处理特殊动画时小级为9
-        newMajorLevelReached = true; // 标记晋升大级
-
-        // 更新最高大级
-        if (majorLevel + 1 > highestMajorLevel) {
-            highestMajorLevel = majorLevel + 1;
-        }
+    if (majorLevel < 9) {
+        majorLevel++;
+        minorLevel = 1; // 重置小级
+        resetHealth();
+        updateLevelText();
+        updateDifficulty();
     } else {
         // 通关
         setTimeout(() => {
@@ -202,61 +286,12 @@ function levelUp() {
             victoryScreen.style.display = 'block';
             backgroundMusic.pause();
         }, 2000);
-        return;
     }
-    updateLevelText();
-    updateRemainingLevels();
-    updateDifficulty();
 }
 
-// 降级
-function levelDown() {
-    if (minorLevel > 1) {
-        minorLevel--;
-    } else {
-        if (majorLevel > highestMajorLevel) {
-            majorLevel--;
-            minorLevel = 9;
-        } else {
-            // 保持在最高大级，最小小级
-            minorLevel = 1;
-        }
-    }
-    updateLevelText();
-    updateRemainingLevels();
-    updateDifficulty();
-}
-
-// 检查游戏进度
-function checkGameProgress() {
-    if (newMajorLevelReached) {
-        newMajorLevelReached = false; // 重置标记
-
-        // 延迟1秒，然后播放特殊动画
-        setTimeout(() => {
-            // 显示覆盖图片
-            overlayImage.style.display = 'block';
-
-            // 播放音效 red.mp3
-            redSound.currentTime = 0;
-            redSound.play();
-
-            // 5秒后进入大级提示页面
-            setTimeout(() => {
-                gameContainer.style.display = 'none';
-                majorLevelScreen.style.display = 'block';
-
-                // 更新到下一个大级
-                majorLevel++;
-                minorLevel = 1;
-                updateLevelText();
-                updateRemainingLevels();
-                updateDifficulty();
-            }, 5000); // 将时间从 3000 毫秒改为 5000 毫秒
-        }, 1000);
-    } else {
-        startEnergyBar();
-    }
+// 挑战失败
+function showChallengeFailedDialog() {
+    challengeFailedDialog.style.display = 'block';
 }
 
 // 开始游戏

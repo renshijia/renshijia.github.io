@@ -26,32 +26,55 @@
         <img src="assets/victory_background.png" alt="胜利背景" class="overlay-image">
     </div>
 
+    <!-- 挑战失败对话框 -->
+    <div id="challengeFailedDialog" class="overlay" style="display: none;">
+        <div class="dialog">
+            <p>挑战失败</p>
+            <button id="retryButton">再来一次</button>
+        </div>
+    </div>
+
     <div id="gameContainer" class="game-container" style="display: none;">
         <h1>
             《九九八十一难》
-            <span id="remainingLevels">还剩下 <span id="remainingNumber">81</span> 难</span>
+            <span id="levelTitle">第<span id="majorLevelNumber">1</span>关</span>
         </h1>
-        <div class="level-info">
-            <span id="majorLevel">大级：1</span>
-            <span id="minorLevel">小级：1</span>
-        </div>
         <div class="game-area">
+            <!-- 左侧区域：玩家 -->
             <div class="player-side">
                 <img id="playerImage" src="assets/player.png" alt="孙悟空">
                 <div id="statusText" class="status-text"></div>
+                <!-- 玩家血条 -->
+                <div class="health-bar">
+                    <div id="playerHealthFill" class="health-fill"></div>
+                </div>
             </div>
+
+            <!-- 中央区域：锁定能量按钮和结果显示 -->
+            <div class="central-area">
+                <button id="lockButton">锁定能量</button>
+                <div class="energy-value" id="playerEnergyValue">玩家能量值：0%</div>
+                <div class="comparison-result" id="comparisonResult"></div>
+            </div>
+
+            <!-- 右侧区域：能量条 -->
             <div class="energy-bar-container">
+                <div id="defeatMonsterText">《消灭此怪，即可领现金！》</div>
                 <div id="energyBar" class="energy-bar">
                     <div class="energy-fill" id="energyFill"></div>
                 </div>
-                <div class="energy-value" id="playerEnergyValue">玩家能量值：0%</div>
-                <button id="lockButton">锁定能量</button>
-                <div class="comparison-result" id="comparisonResult"></div>
             </div>
+
+            <!-- 下侧区域：妖怪 -->
             <div class="monster-side">
-                <img id="monsterImage" src="assets/monster1.png" alt="妖怪">
-                <img id="overlayImage" src="assets/red.png" alt="覆盖图片" class="overlay-image" style="display: none;">
                 <p id="monsterEnergy">妖怪能量值：60%</p>
+                <img id="monsterImage" src="assets/monster1.png" alt="妖怪">
+                <!-- 覆盖图片 -->
+                <img id="overlayImage" src="assets/red.png" alt="覆盖图片" class="overlay-image" style="display: none;">
+                <!-- 妖怪血条 -->
+                <div class="health-bar">
+                    <div id="monsterHealthFill" class="health-fill"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -59,7 +82,7 @@
     <audio id="backgroundMusic" src="assets/background_music.mp3" loop></audio>
     <audio id="victorySound" src="assets/victory.mp3"></audio>
     <audio id="defeatSound" src="assets/defeat.mp3"></audio>
-    <!-- 新增的音频 -->
+    <!-- 添加 red.mp3 音频 -->
     <audio id="redSound" src="assets/red.mp3"></audio>
     <script src="script.js"></script>
 </body>
