@@ -18,13 +18,11 @@ const monsterEnergyValues = [0, 60, 65, 70, 75, 80, 85, 90, 95, 98]; // 索引�
 // DOM 元素
 const majorLevelNumber = document.getElementById('majorLevelNumber'); // 新增
 
-const monsterEnergyText = document.getElementById('monsterEnergy');
 const energyFill = document.getElementById('energyFill');
 const lockButton = document.getElementById('lockButton');
 const monsterImage = document.getElementById('monsterImage');
 const overlayImage = document.getElementById('overlayImage'); // 覆盖的图片
 const playerImage = document.getElementById('playerImage');
-const playerEnergyValue = document.getElementById('playerEnergyValue');
 const comparisonResult = document.getElementById('comparisonResult');
 const victorySound = document.getElementById('victorySound');
 const defeatSound = document.getElementById('defeatSound');
@@ -85,7 +83,7 @@ function updateLevelText() {
 function updateDifficulty() {
     // 更新妖怪能量值
     monsterEnergy = monsterEnergyValues[majorLevel];
-    monsterEnergyText.textContent = `妖怪能量值：${monsterEnergy}%`;
+    // 由于已删除妖怪能量值显示，故不再更新文本
 
     // 更新妖怪图片
     monsterImage.src = `assets/monster${majorLevel}.png`;
@@ -152,7 +150,8 @@ function startEnergyBar() {
 lockButton.addEventListener('click', () => {
     lockButton.disabled = true; // 禁用按钮
     clearInterval(energyBarInterval);
-    playerEnergyValue.textContent = `玩家能量值：${energyValue}%`;
+    // 已删除玩家能量值显示
+
     if (energyValue > monsterEnergy) {
         comparisonResult.textContent = '胜过妖怪的能量值，胜利！';
         playSound('victory');

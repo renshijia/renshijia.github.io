@@ -56,8 +56,8 @@ h1 {
 }
 
 .player-side img {
-    width: 50%;
-    max-width: 150px;
+    width: 100%; /* 放大图片宽度 */
+    max-width: 300px; /* 放大图片最大宽度 */
 }
 
 .status-text {
@@ -74,7 +74,8 @@ h1 {
 }
 
 .health-bar {
-    width: 80%;
+    width: 100%; /* 与图片宽度相同 */
+    max-width: 300px; /* 最大宽度与图片相同 */
     height: 15px;
     background-color: #555;
     border-radius: 7.5px;
@@ -107,7 +108,7 @@ h1 {
     cursor: pointer;
 }
 
-.energy-value, .comparison-result {
+.comparison-result {
     margin-top: 5px;
     font-size: 1em;
 }
@@ -158,15 +159,8 @@ h1 {
 }
 
 .monster-side img {
-    width: 50%;
-    max-width: 150px;
-}
-
-#monsterEnergy {
-    font-size: 1.2em;
-    color: red;
-    margin-bottom: 5px;
-    text-align: center;
+    width: 100%; /* 放大图片宽度 */
+    max-width: 300px; /* 放大图片最大宽度 */
 }
 
 #overlayImage {
