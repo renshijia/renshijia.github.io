@@ -56,8 +56,8 @@ h1 {
 }
 
 .player-side img {
-    width: 100%; /* 放大图片宽度 */
-    max-width: 300px; /* 放大图片最大宽度 */
+    width: 400%; /* 放大图片宽度 */
+    max-width: 1200px; /* 放大图片最大宽度 */
 }
 
 .status-text {
@@ -74,8 +74,8 @@ h1 {
 }
 
 .health-bar {
-    width: 100%; /* 与图片宽度相同 */
-    max-width: 300px; /* 最大宽度与图片相同 */
+    width: 400%; /* 与放大后的图片宽度相同 */
+    max-width: 1200px; /* 最大宽度与图片相同 */
     height: 15px;
     background-color: #555;
     border-radius: 7.5px;
@@ -134,7 +134,7 @@ h1 {
 
 .energy-bar {
     width: 30px;
-    height: 200px;
+    height: 1000px; /* 扩大5倍长度 */
     background-image: url('assets/jinguBang.png'); /* 金箍棒图片 */
     background-size: cover;
     background-position: center;
@@ -159,8 +159,8 @@ h1 {
 }
 
 .monster-side img {
-    width: 100%; /* 放大图片宽度 */
-    max-width: 300px; /* 放大图片最大宽度 */
+    width: 400%; /* 放大图片宽度 */
+    max-width: 1200px; /* 放大图片最大宽度 */
 }
 
 #overlayImage {
